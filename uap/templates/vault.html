@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>UAP: Vault</title>
+<link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <h2>Vault</h2>
+    <p>(UAP uses E-CHAP protocol for authentication.)</p>
+    <ul>
+        {% for dns_key, dns_val in servers.items() %}
+            <h3>{{ dns_key }}</h3>
+            <ul>
+                {% for username, password in dns_val.items() %}
+                    <form action="/echapsend" method="post" style="float: left; margin-right: 5px">
+                        <input type="url" name="dns" value="{{ dns_key }}" style="display: none" readonly>
+                        <input type="text" name="username" value="{{ username }}" style="display: none" readonly>
+                        <input type="password" name="password" value="{{ password }}" style="display: none" readonly>
+                        <input type="submit" value="{{ username }}">
+                    </form>
+                    <form action="/delitem" method="post">
+                        <input type="url" name="dns" value="{{ dns_key }}" style="display: none" readonly>
+                        <input type="text" name="username" value="{{ username }}" style="display: none" readonly>
+                        <input type="submit" value="Delete">
+                    </form>
+                    <br>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </ul>
+    <h2>Add Item</h2>
+    <form action="/additem" method="post">
+        <input type="url" name="dns" placeholder="DNS" class="add_input">
+        <br>
+        <input type="text" name="username" placeholder="Username" class="add_input">
+        <br>
+        <input id="add_password" type="password" name="password" placeholder="Password" class="add_input">
+        <input type="button" name="generate" value="Generate and Copy to Clipboard" onclick="genPassword(20)">
+        <br>
+        <input type="submit" value="Add to Vault">
+    </form>
+    <script>
+        function genPassword(len) {
+            const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$_-+^?!%&/()[]{}.:;~*<>@£€"
+            let password = ""
+            for (i = 0; i < len; i++) {
+                let char = Math.floor(Math.random() * charset.length + 1)
+                password += charset.charAt(char)
+            }
+            navigator.clipboard.writeText(password)
+            document.getElementById("add_password").value = password
+        }
+    </script>
+</body>
+</html>

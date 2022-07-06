@@ -1,0 +1,7 @@
+Flask
+django
+django-environ
+requests
+cryptography
+bitstring
+python-dotenv
